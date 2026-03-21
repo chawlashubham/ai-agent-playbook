@@ -1,0 +1,42 @@
+# Benchmark: Chain-of-Thought vs Direct Summarization
+# Related experiment: experiments/2024-01-chain-of-thought-summarization/
+
+benchmark_id: summarization-cot-vs-direct-v1
+version: "1.0"
+description: >
+  Compares ROUGE-L score and human preference between a direct summarization
+  prompt and a chain-of-thought summarization prompt across 30 documents.
+created: 2024-01-28
+author: ai-team
+model: gpt-4o
+
+metric:
+  primary: rouge-l
+  secondary: human-preference
+
+variants:
+  - id: control
+    name: Direct Summarization
+    prompt_ref: prompts/experimental/summarization/direct-summary-v1.md
+  - id: treatment
+    name: Chain-of-Thought Summarization
+    prompt_ref: prompts/experimental/summarization/chain-of-thought-summary-v1.md
+
+dataset: eval/datasets/summarization-30doc-dataset.json
+sample_size: 30
+
+results:
+  - variant_id: control
+    rouge_l: 0.41
+    human_preference_pct: 27
+  - variant_id: treatment
+    rouge_l: 0.46
+    human_preference_pct: 73
+
+winner: treatment
+statistical_significance: "p < 0.05 (Wilcoxon signed-rank test)"
+
+notes: >
+  CoT summaries were ~40% longer in token count, increasing cost and latency.
+  Recommend evaluating a lighter CoT variant to preserve quality gains at
+  lower cost for latency-sensitive use cases.

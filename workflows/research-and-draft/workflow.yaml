@@ -1,0 +1,72 @@
+# workflow: research-and-draft
+# Version: 1.0
+# Description: Searches the web, reads sources, and drafts a research report.
+
+workflow:
+  id: research-and-draft
+  version: "1.0"
+  description: >
+    Three-step pipeline: web search → read top sources → draft report.
+  tags:
+    - research
+    - web-search
+    - document-drafting
+    - multi-step
+  status: production
+
+  inputs:
+    topic:
+      type: string
+      required: true
+      description: The research topic or question.
+    num_sources:
+      type: integer
+      required: false
+      default: 5
+      description: Number of web sources to read.
+    output_format:
+      type: string
+      required: false
+      default: "markdown report with sections"
+      description: Desired output format description.
+
+  steps:
+    - id: step-1-search
+      name: Web Search
+      type: skill
+      skill_ref: skills/web-search.yaml
+      inputs:
+        query: "{{inputs.topic}}"
+        num_results: "{{inputs.num_sources}}"
+      outputs:
+        search_results: "{{response.results}}"
+
+    - id: step-2-read
+      name: Read Sources
+      type: skill
+      skill_ref: skills/file-reader.yaml
+      # Runs once per search result (parallel map)
+      foreach: "{{steps.step-1-search.search_results}}"
+      inputs:
+        source: "{{item.url}}"
+        max_chars: 5000
+      outputs:
+        documents: "{{responses[*].content}}"
+
+    - id: step-3-draft
+      name: Draft Report
+      type: prompt
+      agent_ref: agents/research-agent
+      inputs:
+        topic: "{{inputs.topic}}"
+        sources: "{{steps.step-2-read.documents}}"
+        output_format: "{{inputs.output_format}}"
+      outputs:
+        report: "{{response.report}}"
+
+  outputs:
+    report: "{{steps.step-3-draft.report}}"
+    sources_used: "{{steps.step-1-search.search_results}}"
+
+  on_error:
+    strategy: fail_fast

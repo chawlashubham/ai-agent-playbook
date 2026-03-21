@@ -1,0 +1,64 @@
+# workflow-template.yaml
+#
+# INSTRUCTIONS: Copy this file, rename it to workflow.yaml inside a new
+# workflows/<workflow-name>/ folder, and fill in all <PLACEHOLDER> values.
+
+workflow:
+  id: <workflow-name>                     # e.g., summarize-and-respond
+  version: "1.0"
+  description: >
+    <One to two sentence description of what this workflow does.>
+  tags:
+    - <tag-1>
+    - <tag-2>
+  status: experimental                    # experimental | production | deprecated
+
+  # -------------------------------------------------------------------------
+  # Inputs — values passed by the caller to start the workflow
+  # -------------------------------------------------------------------------
+  inputs:
+    <input_name>:
+      type: string                        # string | integer | boolean | array
+      required: true
+      description: <Description of this input.>
+    <optional_input>:
+      type: integer
+      required: false
+      default: <default_value>
+      description: <Description.>
+
+  # -------------------------------------------------------------------------
+  # Steps — executed in order; reference previous steps via {{steps.<id>.<output>}}
+  # -------------------------------------------------------------------------
+  steps:
+    - id: step-1-<action>
+      name: <Human-readable step name>
+      type: prompt                        # prompt | skill | agent
+      prompt_ref: prompts/production/<domain>/<prompt-file>.md
+      # skill_ref: skills/<skill-file>.yaml    # use for type: skill
+      # agent_ref: agents/<agent-folder>/      # use for type: agent
+      inputs:
+        <param>: "{{inputs.<input_name>}}"
+      outputs:
+        <output_key>: "{{response.<response_field>}}"
+
+    - id: step-2-<action>
+      name: <Human-readable step name>
+      type: prompt
+      prompt_ref: prompts/production/<domain>/<prompt-file>.md
+      inputs:
+        <param>: "{{steps.step-1-<action>.<output_key>}}"
+      outputs:
+        <output_key>: "{{response.<response_field>}}"
+
+  # -------------------------------------------------------------------------
+  # Final outputs — values returned to the caller
+  # -------------------------------------------------------------------------
+  outputs:
+    <output_name>: "{{steps.step-2-<action>.<output_key>}}"
+
+  # -------------------------------------------------------------------------
+  # Error handling
+  # -------------------------------------------------------------------------
+  on_error:
+    strategy: fail_fast                   # fail_fast | continue | retry

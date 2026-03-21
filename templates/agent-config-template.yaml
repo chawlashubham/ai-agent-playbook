@@ -1,0 +1,60 @@
+# agent-config-template.yaml
+#
+# INSTRUCTIONS: Copy this file, rename it, and fill in all <PLACEHOLDER> values.
+# Save the file as: agents/<agent-name>/agent-config.yaml
+
+agent:
+  id: <agent-name>                        # e.g., customer-support-agent
+  version: "1.0"
+  description: <One-line description of what this agent does.>
+  status: experimental                    # experimental | staging | production
+
+# ---------------------------------------------------------------------------
+# Model settings
+# ---------------------------------------------------------------------------
+model:
+  provider: openai                        # openai | anthropic | ollama | custom
+  name: gpt-4o                            # Model name / identifier
+  temperature: 0.7                        # 0.0–1.0; lower = more deterministic
+  max_tokens: 1024
+  # Uncomment for local Ollama:
+  # provider: ollama
+  # name: llama3
+  # base_url: http://localhost:11434
+
+# ---------------------------------------------------------------------------
+# System prompt
+# ---------------------------------------------------------------------------
+system_prompt:
+  file: system-prompt.md                  # Path relative to this config file
+  variables:
+    variable_1: "<PLACEHOLDER>"           # Add all {{variable}} refs from system-prompt.md
+    variable_2: "<PLACEHOLDER>"
+
+# ---------------------------------------------------------------------------
+# Skills / tools
+# ---------------------------------------------------------------------------
+skills:
+  - name: <skill-name>                    # Human-readable name
+    ref: skills/<skill-file>.yaml         # Path to skill definition
+
+# ---------------------------------------------------------------------------
+# Memory
+# ---------------------------------------------------------------------------
+memory:
+  type: buffer                            # buffer | summary | vector
+  max_messages: 20
+
+# ---------------------------------------------------------------------------
+# Guardrails
+# ---------------------------------------------------------------------------
+guardrails:
+  max_turns: 20
+  content_filter: true
+
+# ---------------------------------------------------------------------------
+# Logging
+# ---------------------------------------------------------------------------
+logging:
+  level: info                             # debug | info | warn | error
+  trace: false
