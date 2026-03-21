@@ -1,6 +1,6 @@
 # Workflow: Summarize and Respond
 
-Takes an input document, summarises it, then generates a user-facing reply or action recommendation.
+Takes an input document, summarizes it, then generates a user-facing reply or action recommendation.
 
 ## Goal
 
@@ -8,7 +8,7 @@ Transform long input documents into concise, actionable responses without the ag
 
 ## Steps
 
-1. **summarize** — Call the summarization prompt to reduce the document to key points.
+1. **Summarize** — Call the summarization prompt to reduce the document to key points.
 2. **respond** — Use the summary as context to draft a user-facing reply.
 
 ## Inputs

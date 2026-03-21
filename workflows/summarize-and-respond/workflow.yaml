@@ -6,7 +6,7 @@ workflow:
   id: summarize-and-respond
   version: "1.0"
   description: >
-    Two-step pipeline: first summarise a document, then use the summary
+    Two-step pipeline: first summarize a document, then use the summary
     as context to answer a user query or draft a response.
   tags:
     - summarization
