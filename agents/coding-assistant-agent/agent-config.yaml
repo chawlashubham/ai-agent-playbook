@@ -1,0 +1,68 @@
+# agent-config.yaml — Coding Assistant Agent
+#
+# Defines the runtime configuration for the coding-assistant-agent.
+# Copy and fill in all <PLACEHOLDER> values before deploying.
+
+agent:
+  id: coding-assistant-agent
+  version: "1.0"
+  description: Reviews code and pull requests for quality, correctness, and security vulnerabilities.
+  status: production
+
+# ---------------------------------------------------------------------------
+# Model settings
+# ---------------------------------------------------------------------------
+model:
+  provider: openai
+  name: gpt-4o
+  temperature: 0.2        # Low temperature for deterministic, precise code analysis
+  max_tokens: 2048
+  # For Anthropic:
+  # provider: anthropic
+  # name: claude-3-opus
+
+# ---------------------------------------------------------------------------
+# System prompt
+# ---------------------------------------------------------------------------
+system_prompt:
+  file: system-prompt.md
+  variables:
+    languages_supported: "<PLACEHOLDER: e.g., Python, JavaScript, TypeScript, Go>"
+    severity_threshold: "<PLACEHOLDER: e.g., high — only surface high and critical findings>"
+
+# ---------------------------------------------------------------------------
+# Skills / tools the agent can call
+# ---------------------------------------------------------------------------
+skills:
+  - name: code-execution
+    ref: skills/code-execution.yaml
+  - name: web-search
+    ref: skills/web-search.yaml
+
+# ---------------------------------------------------------------------------
+# Memory configuration
+# ---------------------------------------------------------------------------
+memory:
+  type: buffer
+  max_messages: 30        # Larger buffer to track multi-file review context
+
+# ---------------------------------------------------------------------------
+# Guardrails
+# ---------------------------------------------------------------------------
+guardrails:
+  max_turns: 20
+  blocked_patterns:             # Refuse to suggest or execute these operations
+    - "DROP TABLE"
+    - "rm -rf"
+    - "DELETE FROM"
+    - "format c:"
+  require_confirmation_before_execution: true   # Always confirm before running code
+  content_filter: true
+  no_secret_repetition: true    # Never echo back secrets or credentials found in code
+
+# ---------------------------------------------------------------------------
+# Logging & tracing
+# ---------------------------------------------------------------------------
+logging:
+  level: info
+  trace: true

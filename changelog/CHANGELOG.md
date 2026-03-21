@@ -6,6 +6,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2026-03-22]
+
+### Added
+
+- `prompts/production/coding/review-code-security-v1.md` — Security-focused code review prompt; returns OWASP-aligned JSON findings with severity ratings and remediation guidance.
+- `prompts/production/customer-support/handle-refund-v2.md` — Improved refund handler with customer tier-awareness (`standard`/`premium`/`enterprise`), structured JSON output, and tiered escalation thresholds. Supersedes v1.
+- `prompts/experimental/data-extraction/extract-invoice-json-v1.md` — Invoice data extraction prompt; demonstrates three-component composition (persona + format + constraint/no-pii-v1).
+- `prompts/experimental/classification/classify-intent-v1.md` — Zero-shot intent classification with confidence scoring and reasoning output.
+- `prompts/components/constraint/no-pii-v1.md` — Reusable PII redaction constraint component.
+- `agents/coding-assistant-agent/` — New coding assistant agent with code-execution + web-search skills, security-first persona, and destructive-operation guardrails.
+- `eval/datasets/coding-review-security-dataset.json` — Evaluation dataset for security code review prompt (safe code, SQL injection, XSS cases).
+- `eval/test-cases/coding-review-security-v1-tests.yaml` — Test cases for the security review prompt including an adversarial prompt-injection test.
+- `eval/benchmarks/classification-few-shot-vs-zero-shot.yaml` — Benchmark comparing zero-shot vs few-shot intent classification (few-shot wins: 91% vs 78% accuracy).
+- `experiments/2024-02-few-shot-vs-zero-shot-classification/` — Completed experiment with hypothesis and results; few-shot variant promoted.
+- `.github/workflows/validate-frontmatter.yml` — CI workflow that validates required YAML frontmatter fields on every PR touching `prompts/` or `agents/`.
+- `CONTRIBUTING.md` — Contributor guide covering naming conventions, metadata rules, prompt lifecycle, and PR process.
+
+### Deprecated
+
+- `prompts/production/customer-support/handle-refund-v1.md` — Superseded by `handle-refund-v2`. File retained for reference.
+
+---
+
 ## [2024-01-28]
 
 ### Added

@@ -1,0 +1,82 @@
+name: Validate Prompt Frontmatter
+
+on:
+  push:
+    paths:
+      - "prompts/**/*.md"
+      - "agents/**/*.md"
+  pull_request:
+    paths:
+      - "prompts/**/*.md"
+      - "agents/**/*.md"
+
+jobs:
+  validate:
+    name: Check required YAML frontmatter fields
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Validate frontmatter on all prompt and agent markdown files
+        run: |
+          python - <<'EOF'
+          import os
+          import sys
+          import yaml
+
+          REQUIRED_FIELDS = ["id", "version", "status", "description", "author"]
+          SEARCH_DIRS = ["prompts", "agents"]
+          errors = []
+
+          def extract_frontmatter(filepath):
+              with open(filepath, "r", encoding="utf-8") as f:
+                  content = f.read()
+              if not content.startswith("---"):
+                  return None
+              parts = content.split("---", 2)
+              if len(parts) < 3:
+                  return None
+              try:
+                  return yaml.safe_load(parts[1])
+              except yaml.YAMLError as e:
+                  return {"__parse_error__": str(e)}
+
+          for search_dir in SEARCH_DIRS:
+              for root, _, files in os.walk(search_dir):
+                  for filename in files:
+                      if not filename.endswith(".md"):
+                          continue
+                      filepath = os.path.join(root, filename)
+                      frontmatter = extract_frontmatter(filepath)
+
+                      if frontmatter is None:
+                          errors.append(f"MISSING FRONTMATTER: {filepath}")
+                          continue
+
+                      if "__parse_error__" in frontmatter:
+                          errors.append(f"INVALID YAML in {filepath}: {frontmatter['__parse_error__']}")
+                          continue
+
+                      for field in REQUIRED_FIELDS:
+                          if field not in frontmatter or frontmatter[field] is None:
+                              errors.append(f"MISSING FIELD '{field}': {filepath}")
+
+          if errors:
+              print("\n❌ Frontmatter validation failed:\n")
+              for err in errors:
+                  print(f"  • {err}")
+              print(f"\n{len(errors)} error(s) found. Fix the issues above and push again.")
+              sys.exit(1)
+          else:
+              print("✅ All prompt and agent markdown files have valid frontmatter.")
+          EOF

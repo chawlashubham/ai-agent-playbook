@@ -1,5 +1,11 @@
 # ai-agent-playbook
 
+![Prompts](https://img.shields.io/badge/prompts-7-blue?style=flat-square)
+![Agents](https://img.shields.io/badge/agents-3-blueviolet?style=flat-square)
+![Experiments](https://img.shields.io/badge/experiments-2-orange?style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/chawlashubham/ai-agent-playbook?style=flat-square)
+![License](https://img.shields.io/github/license/chawlashubham/ai-agent-playbook?style=flat-square)
+
 A clean, scalable, and well-documented repository for managing AI prompts, agent instructions, reusable skills, workflows, templates, experiments, and documentation for LLM-powered systems.
 
 ## Purpose
@@ -53,6 +59,9 @@ ai-agent-playbook/
 | [`docs/best-practices.md`](docs/best-practices.md) | Guidelines for writing effective prompts |
 
 ## Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full guide including naming conventions,
+metadata requirements, and the PR process.
 
 - Follow the naming conventions in [`docs/naming-conventions.md`](docs/naming-conventions.md).
 - Add metadata headers to every new prompt file.

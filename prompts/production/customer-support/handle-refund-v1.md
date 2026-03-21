@@ -3,7 +3,8 @@ id: customer-support-handle-refund-v1
 version: "1.0"
 domain: customer-support
 intent: handle-refund-request
-status: production
+status: deprecated
+superseded_by: customer-support-handle-refund-v2
 model_compatibility:
   - gpt-4
   - gpt-4o
@@ -19,7 +20,7 @@ components:
   - format/json-output-v1
 author: ai-team
 created: 2024-01-15
-updated: 2024-01-20
+updated: 2024-03-01
 description: >
   Guides the agent through a structured refund-handling conversation.
   Ensures the agent is empathetic, gathers required information, checks

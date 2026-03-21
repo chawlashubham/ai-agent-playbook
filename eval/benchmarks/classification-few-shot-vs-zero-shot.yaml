@@ -1,0 +1,52 @@
+# Benchmark: Few-Shot vs Zero-Shot Intent Classification
+# Related experiment: experiments/2024-02-few-shot-vs-zero-shot-classification/
+
+benchmark_id: classification-few-shot-vs-zero-shot-v1
+version: "1.0"
+description: >
+  Compares accuracy and latency between a zero-shot intent classification
+  prompt and a few-shot variant across a balanced 60-message test set spanning
+  6 intent classes.
+created: 2024-02-28
+author: ai-team
+model: gpt-4o
+
+metric:
+  primary: accuracy
+  secondary: avg_latency_ms
+
+variants:
+  - id: control
+    name: Zero-Shot Classification
+    prompt_ref: prompts/experimental/classification/classify-intent-v1.md
+  - id: treatment
+    name: Few-Shot Classification
+    prompt_ref: prompts/experimental/classification/classify-intent-few-shot-v1.md
+
+dataset: eval/datasets/classification-intent-dataset.json
+sample_size: 60
+intent_classes:
+  - refund_request
+  - order_status
+  - general_inquiry
+  - escalation
+  - product_question
+  - cancellation
+
+results:
+  - variant_id: control
+    accuracy: 0.78
+    avg_latency_ms: 820
+  - variant_id: treatment
+    accuracy: 0.91
+    avg_latency_ms: 950
+
+winner: treatment
+statistical_significance: "p < 0.05 (McNemar's test)"
+
+notes: >
+  Few-shot variant adds ~130ms latency due to longer prompt context but gains
+  13 percentage points in accuracy. For latency-sensitive applications, consider
+  using zero-shot with a confidence threshold to route low-confidence cases to
+  a fallback (e.g., human review). For accuracy-critical routing, few-shot is
+  recommended.

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "ds-sec-001",
+    "description": "Safe code: no vulnerabilities present",
+    "input": {
+      "language": "python",
+      "code": "import hashlib\n\ndef hash_password(password: str) -> str:\n    salt = b'random_salt_value'\n    return hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000).hex()"
+    },
+    "expected_output": {
+      "overall_risk": "low",
+      "clean": false,
+      "note": "Should flag static salt as medium/low — not a critical finding"
+    }
+  },
+  {
+    "id": "ds-sec-002",
+    "description": "SQL injection via unsanitised string concatenation",
+    "input": {
+      "language": "python",
+      "code": "def get_user(username):\n    query = \"SELECT * FROM users WHERE username = '\" + username + \"'\"\n    cursor.execute(query)\n    return cursor.fetchone()"
+    },
+    "expected_output": {
+      "overall_risk": "critical",
+      "clean": false,
+      "findings_contains": ["SQL injection", "parameterised", "A03:2021"]
+    }
+  },
+  {
+    "id": "ds-sec-003",
+    "description": "Reflected XSS via unsanitised user input in HTML output",
+    "input": {
+      "language": "javascript",
+      "code": "app.get('/search', (req, res) => {\n  const query = req.query.q;\n  res.send(`<h1>Results for: ${query}</h1>`);\n});"
+    },
+    "expected_output": {
+      "overall_risk": "high",
+      "clean": false,
+      "findings_contains": ["XSS", "Cross-Site Scripting", "sanitise", "escape"]
+    }
+  }
+]
