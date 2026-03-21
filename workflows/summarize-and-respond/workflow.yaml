@@ -1,0 +1,70 @@
+# workflow: summarize-and-respond
+# Version: 1.0
+# Description: Summarises an input document, then generates a user-facing reply.
+
+workflow:
+  id: summarize-and-respond
+  version: "1.0"
+  description: >
+    Two-step pipeline: first summarise a document, then use the summary
+    as context to answer a user query or draft a response.
+  tags:
+    - summarization
+    - question-answering
+    - document-processing
+  status: production
+
+  # -------------------------------------------------------------------------
+  # Inputs — passed by the caller
+  # -------------------------------------------------------------------------
+  inputs:
+    document:
+      type: string
+      required: true
+      description: Full text of the document to process.
+    user_query:
+      type: string
+      required: true
+      description: The user's question or task regarding the document.
+    summary_length:
+      type: integer
+      required: false
+      default: 150
+      description: Target word count for the intermediate summary.
+
+  # -------------------------------------------------------------------------
+  # Steps — executed in order; each step's output feeds the next
+  # -------------------------------------------------------------------------
+  steps:
+    - id: step-1-summarize
+      name: Summarize Document
+      type: prompt
+      prompt_ref: prompts/production/summarization/abstractive-summary-v1.md
+      inputs:
+        document: "{{inputs.document}}"
+        target_length: "{{inputs.summary_length}}"
+      outputs:
+        summary: "{{response.summary}}"
+
+    - id: step-2-respond
+      name: Generate Response
+      type: prompt
+      prompt_ref: prompts/production/customer-support/handle-refund-v1.md
+      inputs:
+        context: "{{steps.step-1-summarize.summary}}"
+        user_query: "{{inputs.user_query}}"
+      outputs:
+        reply: "{{response.reply}}"
+
+  # -------------------------------------------------------------------------
+  # Final output
+  # -------------------------------------------------------------------------
+  outputs:
+    summary: "{{steps.step-1-summarize.summary}}"
+    reply: "{{steps.step-2-respond.reply}}"
+
+  # -------------------------------------------------------------------------
+  # Error handling
+  # -------------------------------------------------------------------------
+  on_error:
+    strategy: fail_fast         # fail_fast | continue | retry

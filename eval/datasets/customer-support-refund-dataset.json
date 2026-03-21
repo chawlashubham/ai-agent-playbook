@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ds-001",
+    "description": "Happy path: eligible refund, damaged item within 30 days",
+    "input": {
+      "company_name": "Acme Corp",
+      "refund_policy": "Items may be returned within 30 days of delivery for a full refund if damaged or defective.",
+      "escalation_threshold": "$500",
+      "customer_message": "Order #12345 arrived damaged 5 days ago. I want a full refund."
+    },
+    "expected_output": {
+      "decision": "approved",
+      "contains_any": ["refund", "processing", "3-5 business days"]
+    }
+  },
+  {
+    "id": "ds-002",
+    "description": "Edge case: refund request outside 30-day window",
+    "input": {
+      "company_name": "Acme Corp",
+      "refund_policy": "Items may be returned within 30 days of delivery for a full refund if damaged or defective.",
+      "escalation_threshold": "$500",
+      "customer_message": "I bought this 45 days ago and it stopped working. Can I get a refund?"
+    },
+    "expected_output": {
+      "decision": "denied",
+      "contains_any": ["30 days", "policy", "unable to process"]
+    }
+  },
+  {
+    "id": "ds-003",
+    "description": "Escalation: order value exceeds threshold",
+    "input": {
+      "company_name": "Acme Corp",
+      "refund_policy": "Items may be returned within 30 days of delivery for a full refund if damaged or defective.",
+      "escalation_threshold": "$500",
+      "customer_message": "Order #99999 was for $750. The product is completely broken. I need a refund immediately."
+    },
+    "expected_output": {
+      "escalated": true,
+      "contains_any": ["escalate", "specialist", "human agent", "senior"]
+    }
+  }
+]

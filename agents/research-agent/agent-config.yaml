@@ -1,0 +1,33 @@
+# agent-config.yaml — Research Agent
+
+agent:
+  id: research-agent
+  version: "1.0"
+  description: Searches the web, reads documents, and drafts research reports.
+  status: production
+
+model:
+  provider: openai
+  name: gpt-4o
+  temperature: 0.5
+  max_tokens: 4096
+
+system_prompt:
+  file: system-prompt.md
+  variables:
+    output_format: "<PLACEHOLDER: e.g., 'markdown report with sections'>"
+    max_sources: 10
+
+skills:
+  - name: web-search
+    ref: skills/web-search.yaml
+  - name: file-reader
+    ref: skills/file-reader.yaml
+
+memory:
+  type: summary               # Use summary memory for long research sessions
+  max_messages: 50
+
+guardrails:
+  max_turns: 30
+  max_search_calls: 20        # Prevent runaway search loops
