@@ -1,0 +1,37 @@
+# config.yaml — Skill Implementation Configuration
+#
+# INSTRUCTIONS: Copy this file to skills/<skill-name>/config.yaml
+# Choose ONE implementation type and fill in the relevant section.
+
+# ---------------------------------------------------------------------------
+# Option A: REST API
+# ---------------------------------------------------------------------------
+implementation:
+  type: api
+  endpoint: https://api.example.com/v1/<endpoint>
+  method: GET                  # GET | POST | PUT
+  auth:
+    type: api_key              # api_key | bearer_token | none
+    header: X-API-Key
+    env_var: <ENV_VAR_NAME>    # Never hardcode secrets
+  params:                      # For GET requests
+    param_1: "{{param_1}}"
+  # body:                      # For POST requests
+  #   field_1: "{{param_1}}"
+
+# ---------------------------------------------------------------------------
+# Option B: Python function (comment out Option A and uncomment this)
+# ---------------------------------------------------------------------------
+# implementation:
+#   type: python_function
+#   module: skills.<module_name>
+#   function: <function_name>
+#   args:
+#     param_1: "{{param_1}}"
+
+# ---------------------------------------------------------------------------
+# Error handling
+# ---------------------------------------------------------------------------
+on_error:
+  strategy: raise              # return_empty | retry | raise
+  retry_attempts: 2            # Only used if strategy: retry

@@ -1,0 +1,14 @@
+implementation:
+  type: api
+  endpoint: https://sandbox.example.com/v1/execute
+  method: POST
+  auth:
+    type: bearer_token
+    env_var: SANDBOX_API_TOKEN
+  body:
+    language: "{{language}}"
+    code: "{{code}}"
+    timeout: "{{timeout_seconds}}"
+
+on_error:
+  strategy: raise

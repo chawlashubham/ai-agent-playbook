@@ -1,0 +1,37 @@
+id: customer-support-agent
+version: "1.0"
+status: production
+
+model:
+  provider: openai
+  name: gpt-4o
+  temperature: 0.3
+  max_tokens: 1024
+
+system_prompt: system-prompt.md
+prompt_variables:
+  company_name: "<your-company-name>"
+  refund_policy: "<paste or reference your refund policy>"
+  escalation_threshold: "$500"
+
+skills:
+  - ref: skills/web-search/SKILL.md
+  # Add customer-specific skills below:
+  # - ref: skills/order-lookup/SKILL.md
+  # - ref: skills/knowledge-base-search/SKILL.md
+
+memory:
+  type: buffer
+  max_messages: 20
+
+guardrails:
+  max_turns: 15
+  escalation_keywords:
+    - speak to a human
+    - manager
+    - escalate
+  content_filter: true
+
+logging:
+  level: info
+  trace: true

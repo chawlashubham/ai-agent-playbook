@@ -1,0 +1,10 @@
+implementation:
+  type: python_function
+  module: skills.file_reader
+  function: read_file
+  args:
+    source: "{{source}}"
+    max_chars: "{{max_chars}}"
+
+on_error:
+  strategy: raise

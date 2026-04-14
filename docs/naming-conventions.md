@@ -1,5 +1,21 @@
 # Naming Conventions
 
+## 0. Fixed Filenames (Special Cases)
+
+Some files have fixed names — do not rename them:
+
+| Fixed Filename | Location | Purpose |
+|---|---|---|
+| `agent.md` | `agents/<name>/agent.md` | Primary agent definition (replaces README.md) |
+| `config.yaml` | `agents/<name>/config.yaml` | Agent runtime config |
+| `system-prompt.md` | `agents/<name>/system-prompt.md` | Agent system prompt |
+| `SKILL.md` | `skills/<name>/SKILL.md` | Skill definition (uppercase) |
+| `config.yaml` | `skills/<name>/config.yaml` | Skill implementation config |
+| `workflow.yaml` | `workflows/<name>/workflow.yaml` | Workflow step graph |
+| `_index.md` | `agents/`, `skills/`, `workflows/` | Registry file for each directory |
+
+`SKILL.md` is always uppercase — this visually distinguishes it from other markdown files and aligns with the SkillsMP convention.
+
 Consistent naming makes prompts easy to discover, version, and compose. Follow these rules across the entire repository.
 
 ---

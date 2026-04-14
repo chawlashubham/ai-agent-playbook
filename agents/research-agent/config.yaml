@@ -1,0 +1,30 @@
+id: research-agent
+version: "1.0"
+status: production
+
+model:
+  provider: openai
+  name: gpt-4o
+  temperature: 0.5
+  max_tokens: 4096
+
+system_prompt: system-prompt.md
+prompt_variables:
+  output_format: "markdown report with sections"
+  max_sources: 10
+
+skills:
+  - ref: skills/web-search/SKILL.md
+  - ref: skills/file-reader/SKILL.md
+
+memory:
+  type: summary
+  max_messages: 50
+
+guardrails:
+  max_turns: 30
+  max_search_calls: 20
+
+logging:
+  level: info
+  trace: false

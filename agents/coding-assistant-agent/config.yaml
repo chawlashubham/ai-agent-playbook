@@ -1,0 +1,37 @@
+id: coding-assistant-agent
+version: "1.0"
+status: production
+
+model:
+  provider: openai
+  name: gpt-4o
+  temperature: 0.2
+  max_tokens: 2048
+
+system_prompt: system-prompt.md
+prompt_variables:
+  languages_supported: "Python, JavaScript, TypeScript, Go"
+  severity_threshold: "high"
+
+skills:
+  - ref: skills/code-execution/SKILL.md
+  - ref: skills/web-search/SKILL.md
+
+memory:
+  type: buffer
+  max_messages: 30
+
+guardrails:
+  max_turns: 20
+  blocked_patterns:
+    - "DROP TABLE"
+    - "rm -rf"
+    - "DELETE FROM"
+    - "format c:"
+  require_confirmation_before_execution: true
+  content_filter: true
+  no_secret_repetition: true
+
+logging:
+  level: info
+  trace: true

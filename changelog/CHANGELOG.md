@@ -1,5 +1,44 @@
 # Changelog
 
+## 2026-04-14
+
+### Restructure: modular agent + skill architecture
+
+**agents/**
+- Added `agent.md` (primary definition) to all 3 agents: `research-agent`, `coding-assistant-agent`, `customer-support-agent`
+- Renamed `agent-config.yaml` → `config.yaml` in all agent folders (pure machine config, no prose)
+- Added `examples/` folder to each agent with sample outputs
+- Added `_index.md` registry listing all agents
+
+**skills/**
+- Restructured flat YAML skills into `skills/<name>/` folders with `SKILL.md` + `config.yaml`
+  - `skills/web-search.yaml` → `skills/web-search/SKILL.md` + `skills/web-search/config.yaml`
+  - `skills/file-reader.yaml` → `skills/file-reader/SKILL.md` + `skills/file-reader/config.yaml`
+  - `skills/code-execution.yaml` → `skills/code-execution/SKILL.md` + `skills/code-execution/config.yaml`
+- Added `skills/_index.md` registry
+
+**workflows/**
+- Added `workflows/_index.md` registry
+
+**tools/** (new directory)
+- Added `tools/` adapter layer for AI platform-specific formats
+- `tools/copilot/agents/research-agent.agent.md` — source of truth for Copilot agent (previously only in `.github/agents/`)
+- `tools/cursor/.cursorrules` — Cursor-specific repo conventions
+
+**templates/**
+- Added `templates/agent.md` — new agent definition template
+- Added `templates/config.yaml` — new agent runtime config template
+- Added `templates/SKILL.md` — new skill definition template
+- Added `templates/skill-config.yaml` — new skill implementation config template
+- Updated `templates/README.md` with new file inventory and usage instructions
+
+**CI**
+- Updated `validate-frontmatter.yml` to validate `agent.md` and `SKILL.md` files in addition to prompts
+
+**Docs**
+- Updated `README.md` — new directory structure diagram, Quick Reference table
+- Updated `.github/copilot-instructions.md` — new agent/skill structure, folder roles, critical don'ts
+
 All notable changes to prompts, agents, skills, and workflows are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).

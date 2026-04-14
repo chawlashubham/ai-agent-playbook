@@ -1,0 +1,56 @@
+# ai-agent-playbook — Cursor Rules
+#
+# These rules help Cursor understand the conventions of this repository
+# so it can assist with creating and editing prompts, agents, skills, and workflows.
+
+## Repository Purpose
+
+This repo is a framework for managing AI prompts, agent instructions, reusable skills,
+workflows, and experiments for LLM-powered systems. All artifacts are Markdown or YAML files.
+
+## File Conventions
+
+### Prompts (`prompts/`)
+- Every `.md` file must begin with a YAML frontmatter block
+- Required fields: `id`, `version`, `status`, `description`, `author`
+- Naming: `<domain>-<intent>[-<variant>]-v<N>.md`
+- Variables use `{{double_braces}}` syntax
+- Production prompts require test cases in `eval/test-cases/`
+
+### Agents (`agents/`)
+- Each agent lives in its own folder: `agents/<domain>-<role>/`
+- Required files: `agent.md`, `config.yaml`, `system-prompt.md`
+- `agent.md` is the primary definition (human + AI readable)
+- `config.yaml` contains only machine config (model, memory, guardrails)
+- Skills are referenced as `ref: skills/<name>/SKILL.md`
+
+### Skills (`skills/`)
+- Each skill lives in its own folder: `skills/<domain>-<action>/`
+- Required files: `SKILL.md` (definition), `config.yaml` (implementation)
+- `SKILL.md` is always uppercase
+
+### Workflows (`workflows/`)
+- Each workflow lives in its own folder: `workflows/<name>/`
+- Required files: `README.md`, `workflow.yaml`
+
+## Naming Rules
+
+- All file and folder names: lowercase kebab-case only
+- Exception: `SKILL.md` is uppercase
+- No spaces, underscores, or camelCase
+
+## When Generating New Files
+
+1. Always include required YAML frontmatter
+2. Use `{{variable_name}}` for template variables — never hardcode values
+3. Reference skills as `ref: skills/<name>/SKILL.md`
+4. Add new agents/skills/workflows to their respective `_index.md`
+5. Log changes in `changelog/CHANGELOG.md`
+
+## Prompt Lifecycle
+
+```
+prompts/experimental/ → (review + test cases) → prompts/production/
+```
+
+Never edit an existing production prompt — create a new version file.

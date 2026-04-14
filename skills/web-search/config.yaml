@@ -1,0 +1,15 @@
+implementation:
+  type: api
+  endpoint: https://api.search.example.com/v1/search
+  method: GET
+  auth:
+    type: api_key
+    header: X-API-Key
+    env_var: SEARCH_API_KEY
+  params:
+    q: "{{query}}"
+    count: "{{num_results}}"
+
+on_error:
+  strategy: return_empty
+  retry_attempts: 2

@@ -1,23 +1,24 @@
-# agent-config-template.yaml
+# config.yaml — Agent Runtime Configuration
 #
-# INSTRUCTIONS: Copy this file, rename it, and fill in all <PLACEHOLDER> values.
-# Save the file as: agents/<agent-name>/agent-config.yaml
+# INSTRUCTIONS: Copy this file to agents/<agent-name>/config.yaml
+# Fill in all <PLACEHOLDER> values. Do not add prose — keep this pure config.
 
-agent:
-  id: <agent-name>                        # e.g., customer-support-agent
-  version: "1.0"
-  description: <One-line description of what this agent does.>
-  status: experimental                    # experimental | staging | production
+id: <agent-name>
+version: "1.0"
+status: experimental           # experimental | staging | production
 
 # ---------------------------------------------------------------------------
 # Model settings
 # ---------------------------------------------------------------------------
 model:
-  provider: openai                        # openai | anthropic | ollama | custom
-  name: gpt-4o                            # Model name / identifier
-  temperature: 0.7                        # 0.0–1.0; lower = more deterministic
+  provider: openai             # openai | anthropic | ollama | custom
+  name: gpt-4o
+  temperature: 0.7             # 0.0–1.0; lower = more deterministic
   max_tokens: 1024
-  # Uncomment for local Ollama:
+  # For Anthropic:
+  # provider: anthropic
+  # name: claude-sonnet-4-6
+  # For local Ollama:
   # provider: ollama
   # name: llama3
   # base_url: http://localhost:11434
@@ -25,24 +26,22 @@ model:
 # ---------------------------------------------------------------------------
 # System prompt
 # ---------------------------------------------------------------------------
-system_prompt:
-  file: system-prompt.md                  # Path relative to this config file
-  variables:
-    variable_1: "<PLACEHOLDER>"           # Add all {{variable}} refs from system-prompt.md
-    variable_2: "<PLACEHOLDER>"
+system_prompt: system-prompt.md
+prompt_variables:
+  variable_1: "<PLACEHOLDER>"   # Must match {{variable_1}} in system-prompt.md
+  variable_2: "<PLACEHOLDER>"
 
 # ---------------------------------------------------------------------------
-# Skills / tools
+# Skills
 # ---------------------------------------------------------------------------
 skills:
-  - name: <skill-name>                    # Human-readable name
-    ref: skills/<skill-file>.yaml         # Path to skill definition
+  - ref: skills/<skill-name>/SKILL.md
 
 # ---------------------------------------------------------------------------
 # Memory
 # ---------------------------------------------------------------------------
 memory:
-  type: buffer                            # buffer | summary | vector
+  type: buffer                 # buffer | summary | vector
   max_messages: 20
 
 # ---------------------------------------------------------------------------
@@ -56,5 +55,5 @@ guardrails:
 # Logging
 # ---------------------------------------------------------------------------
 logging:
-  level: info                             # debug | info | warn | error
+  level: info                  # debug | info | warn | error
   trace: false
