@@ -8,6 +8,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Claude Code — local per-user settings (share via .claude/settings.json instead)
+.claude/settings.local.json
+
 # Python (if any evaluation scripts)
 __pycache__/
 *.pyc
