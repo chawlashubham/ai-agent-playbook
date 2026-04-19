@@ -1,0 +1,19 @@
+{
+  "name": "<skill_name>",
+  "description": "<One or two sentences: what the tool does and when to use it.>",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "param_1": {
+        "type": "string",
+        "description": "<Description of param_1.>"
+      },
+      "param_2": {
+        "type": "integer",
+        "description": "<Description of param_2. Include defaults and limits.>",
+        "minimum": 1
+      }
+    },
+    "required": ["param_1"]
+  }
+}

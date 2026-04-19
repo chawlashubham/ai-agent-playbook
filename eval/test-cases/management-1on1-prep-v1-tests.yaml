@@ -1,0 +1,76 @@
+# Test cases for: management-1on1-prep-v1
+# Prompt: prompts/experimental/management/1on1-prep-v1.md
+
+prompt_id: management-1on1-prep-v1
+prompt_path: prompts/experimental/management/1on1-prep-v1.md
+
+tests:
+  # ── Normal case ────────────────────────────────────────────────────────────
+  - id: tc-1on1-001
+    description: "Normal signals: must produce patterns + questions + acknowledgment, respect open-ended question style"
+    input:
+      report_name: "Carol"
+      prs_authored_json: |
+        [
+          {"number": 482, "title": "Fix goroutine leak in webhook worker", "merged": true, "review_comments": 2, "url": "https://github.com/o/r/pull/482"},
+          {"number": 479, "title": "Refactor webhook dispatcher", "merged": true, "review_comments": 4, "url": "https://github.com/o/r/pull/479"},
+          {"number": 475, "title": "Add retry metrics", "merged": true, "review_comments": 1, "url": "https://github.com/o/r/pull/475"}
+        ]
+      prs_reviewed_json: |
+        [
+          {"number": 478, "comment_count": 6, "depth": "substantive"},
+          {"number": 481, "comment_count": 3, "depth": "substantive"}
+        ]
+      prior_notes: "Carol said she's interested in distributed-systems work. I said I'd look for an opportunity."
+      known_context: "Mid-level engineer, 18 months on the team."
+    assertions:
+      - type: contains
+        value: "Carol"
+      - type: contains_any
+        values: ["Acknowledge", "acknowledge"]
+      - type: contains_any
+        values: ["distributed", "Distributed"]
+      - type: contains_any
+        values: ["Questions", "question"]
+      - type: not_contains_any
+        values:
+          - "ask them to finish"
+          - "tell them to"
+    expected_status: pass
+
+  # ── Thin signals ───────────────────────────────────────────────────────────
+  - id: tc-1on1-002
+    description: "Very little data: must not fabricate wins or growth areas"
+    input:
+      report_name: "Dave"
+      prs_authored_json: "[]"
+      prs_reviewed_json: "[]"
+      issues_json: "[]"
+      prior_notes: ""
+      known_context: "Dave just returned from a two-week vacation."
+    assertions:
+      - type: contains_any
+        values: ["vacation", "returning", "ramp", "back"]
+      - type: not_contains_any
+        values: ["strong week", "great wins", "shipped a lot"]
+    expected_status: pass
+
+  # ── Guard against status-interrogation mode ────────────────────────────────
+  - id: tc-1on1-003
+    description: "Questions section must lean open-ended, not be a project status checklist"
+    input:
+      report_name: "Alice"
+      prs_authored_json: |
+        [
+          {"number": 500, "title": "Refunds v2: API scaffold", "merged": false, "review_comments": 0},
+          {"number": 502, "title": "Refunds v2: DB schema", "merged": true, "review_comments": 1}
+        ]
+      prior_notes: "Alice mentioned last time that she's feeling stretched between the refunds work and on-call."
+    assertions:
+      - type: contains_any
+        values: ["energizing", "what's on your mind", "how are you", "feeling", "stretched", "load"]
+      - type: not_contains_any
+        values:
+          - "When will Refunds v2 ship?"
+          - "What is the status of"
+    expected_status: pass

@@ -60,7 +60,7 @@ sys.exit(1 if errors else 0)
 | Artifact | Folder | Key files |
 |---|---|---|
 | Agent | `agents/<domain>-<role>/` | `agent.md` (narrative definition), `config.yaml` (model/memory/guardrails), `system-prompt.md` |
-| Skill | `skills/<domain>-<action>/` | `SKILL.md` (uppercase — definition), `config.yaml` (implementation/auth/errors) |
+| Skill | `skills/<domain>-<action>/` | `SKILL.md` (uppercase — definition), `config.yaml` (implementation/auth/errors), `tool-schema.json` (portable tool definition) |
 | Prompt | `prompts/production/<domain>/` or `prompts/experimental/<domain>/` | Single versioned `.md` file |
 | Reusable fragment | `prompts/components/<type>/` | Persona, format, constraint snippets included by prompts |
 | Workflow | `workflows/<name>/` | `workflow.yaml` (step graph), `README.md` |

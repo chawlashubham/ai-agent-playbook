@@ -1,0 +1,22 @@
+implementation:
+  type: python_function
+  module: skills.git_diff_analyze.analyzer
+  entrypoint: analyze_diff
+  auth:
+    type: api_key
+    env_var: ANTHROPIC_API_KEY
+  params:
+    diff: "{{diff}}"
+    repo_language_hint: "{{repo_language_hint}}"
+    max_files: "{{max_files}}"
+
+limits:
+  max_files: 200
+  max_diff_bytes: 2000000
+
+on_error:
+  strategy: degrade
+  retry_attempts: 1
+  fallback:
+    intent: "unknown"
+    category: "unknown"

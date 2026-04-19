@@ -1,0 +1,32 @@
+{
+  "name": "code_review",
+  "description": "Perform an expert-level code review with the depth of a principal engineer. Covers correctness, performance, resilience, architecture, maintainability, and AI/LLM-specific concerns. Trigger when a user shares code, a diff, a PR link, or asks 'is this production-ready?'.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "code": {
+        "type": "string",
+        "description": "The code snippet, diff, or patch to review."
+      },
+      "language": {
+        "type": "string",
+        "description": "Programming language of the code (e.g. 'go', 'python', 'typescript'). Infer if not provided."
+      },
+      "context": {
+        "type": "string",
+        "description": "Optional system or service context: what the code does, Go version, dependencies, scale requirements, internal vs customer-facing."
+      },
+      "review_mode": {
+        "type": "string",
+        "enum": ["full", "surgical"],
+        "description": "Review depth. 'full' (default) covers all 6 dimensions. 'surgical' focuses on the dimension specified in focus_dimension but still surfaces any P0 blockers."
+      },
+      "focus_dimension": {
+        "type": "string",
+        "enum": ["correctness", "performance", "resilience", "design", "quality", "ai_llm"],
+        "description": "Only used when review_mode is 'surgical'. The primary dimension to focus on."
+      }
+    },
+    "required": ["code"]
+  }
+}

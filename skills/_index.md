@@ -9,6 +9,9 @@ All reusable skills in this playbook. Each skill lives in its own folder with a 
 | [`web-search`](web-search/SKILL.md) | production | Queries a search engine, returns ranked results | research-agent, coding-assistant-agent, customer-support-agent |
 | [`file-reader`](file-reader/SKILL.md) | production | Reads text from local files or remote URLs | research-agent |
 | [`code-execution`](code-execution/SKILL.md) | production | Executes sandboxed Python/JS snippets | coding-assistant-agent |
+| [`ui-generate`](ui-generate/SKILL.md) | experimental | Generates UI component code (HTML/CSS/JSX/TSX) from a natural language description | — |
+| [`code-review`](code-review/SKILL.md) | experimental | Principal-level PR review across Go, microservices, distributed systems, LLM integrations | — |
+| [`git-diff-analyze`](git-diff-analyze/SKILL.md) | experimental | Parses a unified diff into intent, surface area, and risk signals for downstream review/reporting | — |
 
 ## Adding a New Skill
 

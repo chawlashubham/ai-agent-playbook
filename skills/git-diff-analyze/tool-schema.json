@@ -1,0 +1,26 @@
+{
+  "name": "git_diff_analyze",
+  "description": "Parse a unified git diff and return structured metadata: inferred intent, category, surface area by layer, risk signals (migrations, auth, concurrency, deleted tests, etc.), and suggested reviewers. Use before a code review or when summarizing multiple PRs.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "diff": {
+        "type": "string",
+        "description": "Unified diff text. Accepts multi-file diffs from `git diff`, `gh pr diff`, or a patch file."
+      },
+      "repo_language_hint": {
+        "type": "string",
+        "enum": ["go", "python", "typescript", "auto"],
+        "description": "Language hint to tune risk detection. Default: auto.",
+        "default": "auto"
+      },
+      "max_files": {
+        "type": "integer",
+        "description": "Safety cap on number of files analyzed. Diffs beyond this are truncated largest-hunks-first. Default: 200.",
+        "minimum": 1,
+        "default": 200
+      }
+    },
+    "required": ["diff"]
+  }
+}

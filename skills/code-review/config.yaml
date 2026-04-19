@@ -1,0 +1,14 @@
+implementation:
+  type: python_function
+  module: skills.code_review
+  function: run_code_review
+  args:
+    code: "{{code}}"
+    language: "{{language}}"
+    context: "{{context}}"
+    review_mode: "{{review_mode}}"
+    focus_dimension: "{{focus_dimension}}"
+
+on_error:
+  strategy: raise
+  retry_attempts: 0

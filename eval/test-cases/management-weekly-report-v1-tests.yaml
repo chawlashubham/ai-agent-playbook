@@ -1,0 +1,77 @@
+# Test cases for: management-weekly-report-v1
+# Prompt: prompts/experimental/reporting/management-weekly-report-v1.md
+
+prompt_id: management-weekly-report-v1
+prompt_path: prompts/experimental/reporting/management-weekly-report-v1.md
+
+tests:
+  # ── Normal week ────────────────────────────────────────────────────────────
+  - id: tc-weekly-001
+    description: "Normal mixed week: must group by theme, cite PR numbers, stay under ~300 words"
+    input:
+      week_ending: "2026-04-17"
+      team_name: "Payments Platform"
+      merged_prs_json: |
+        [
+          {"number": 478, "title": "Add idempotency keys to /charge", "author": "alice", "labels": ["api", "reliability"], "url": "https://github.com/o/r/pull/478"},
+          {"number": 480, "title": "Bump Postgres driver to 1.9", "author": "bob", "labels": ["infra"], "url": "https://github.com/o/r/pull/480"},
+          {"number": 481, "title": "Tune pgx pool settings", "author": "bob", "labels": ["infra", "perf"], "url": "https://github.com/o/r/pull/481"},
+          {"number": 482, "title": "Fix goroutine leak in webhook worker", "author": "carol", "labels": ["bug", "reliability"], "url": "https://github.com/o/r/pull/482"}
+        ]
+      open_issues_json: |
+        [
+          {"number": 500, "title": "Refunds v2 API", "labels": ["in-progress", "feature"], "assignees": ["dave"]}
+        ]
+      notes: "PR #482 resolved Tuesday's P2 incident."
+      use_emoji: false
+    assertions:
+      - type: contains
+        value: "Shipped"
+      - type: contains
+        value: "In Flight"
+      - type: contains_any
+        values: ["#478", "#480", "#481", "#482"]
+      - type: max_words
+        value: 300
+      - type: not_contains
+        value: "🚀"
+    expected_status: pass
+
+  # ── Quiet week ─────────────────────────────────────────────────────────────
+  - id: tc-weekly-002
+    description: "Quiet week with zero merges: must not fabricate shipped work"
+    input:
+      week_ending: "2026-04-17"
+      team_name: "Payments Platform"
+      merged_prs_json: "[]"
+      open_issues_json: |
+        [
+          {"number": 500, "title": "Refunds v2 API", "labels": ["in-progress"], "assignees": ["dave"]}
+        ]
+      notes: "Team was mostly in design reviews this week."
+    assertions:
+      - type: contains_any
+        values: ["Light week", "no merges", "design review", "focus"]
+      - type: not_contains_any
+        values: ["shipped feature", "delivered on"]
+    expected_status: pass
+
+  # ── Adversarial notes ──────────────────────────────────────────────────────
+  - id: tc-weekly-003
+    description: "Notes contradict PR title: lead notes must take precedence; must not celebrate a revert"
+    input:
+      week_ending: "2026-04-17"
+      team_name: "Payments Platform"
+      merged_prs_json: |
+        [
+          {"number": 490, "title": "Launch new pricing tier", "author": "alice", "labels": ["feature"], "url": "https://github.com/o/r/pull/490"},
+          {"number": 491, "title": "Revert: Launch new pricing tier", "author": "alice", "labels": ["revert"], "url": "https://github.com/o/r/pull/491"}
+        ]
+      open_issues_json: "[]"
+      notes: "#490 was reverted by #491 on Thursday after a production bug. Do not claim we shipped new pricing."
+    assertions:
+      - type: not_contains_any
+        values: ["shipped new pricing", "launched new pricing", "delivered new pricing"]
+      - type: contains_any
+        values: ["revert", "rolled back", "reverted"]
+    expected_status: pass

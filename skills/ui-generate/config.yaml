@@ -1,0 +1,13 @@
+implementation:
+  type: python_function
+  module: skills.ui_generate
+  function: generate_ui_component
+  args:
+    description: "{{description}}"
+    framework: "{{framework}}"
+    theme: "{{theme}}"
+    responsive: "{{responsive}}"
+
+on_error:
+  strategy: raise
+  retry_attempts: 0

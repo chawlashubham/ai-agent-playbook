@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-04-19
+
+### Added: Tier 2 tech-lead artifacts — diff analyzer + planning/management prompts
+
+- New skill `skills/git-diff-analyze/` — parses a unified diff into structured metadata (intent, surface area by layer, risk signals, suggested reviewers); shared dep for review/reporting workflows
+- New prompt `prompts/experimental/planning/scope-splitter-v1.md` — epic → vertically-sliced shippable tickets with acceptance criteria and a first-slice recommendation
+- New prompt `prompts/experimental/management/1on1-prep-v1.md` — private prep material for a 1:1 from GitHub activity + prior notes; disciplined against fabrication and status-interrogation framing
+- Added 3 test cases each under `eval/test-cases/` for both prompts
+- Registered in `skills/_index.md` and `prompts/experimental/README.md`
+
+### Added: `code-review` skill references + tech-lead prompts
+
+- Completed `skills/code-review/` — fixed frontmatter to match required schema (`id`, `version`, `status`, `description`, `author`)
+- Added `skills/code-review/references/go-patterns.md` — ctx propagation, goroutine lifecycle, defer-in-loop, error wrapping, HTTP/DB hygiene
+- Added `skills/code-review/references/microservice-checklist.md` — API contracts, idempotency, event schemas, resilience, observability
+- Added `prompts/experimental/reporting/management-weekly-report-v1.md` — GitHub PR/issue JSON → manager-facing weekly digest
+- Added `prompts/experimental/planning/rfc-critique-v1.md` — stress-test a design doc from a principal-engineer POV
+- Added `eval/test-cases/management-weekly-report-v1-tests.yaml` and `eval/test-cases/rfc-critique-v1-tests.yaml` (3 cases each)
+- Registered new skill + prompts in `skills/_index.md` and `prompts/experimental/README.md`
+
+### Added: `ui-generate` skill
+
+- New skill `skills/ui-generate/` — generates UI component code (HTML/CSS, Tailwind, JSX, TSX) from a plain-language description
+- Supports `framework`, `theme`, and `responsive` parameters
+- Backed by Claude via `ANTHROPIC_API_KEY`; pairs well with `code-execution` for smoke-testing output
+- Added to `skills/_index.md` registry
+
 ## 2026-04-14
 
 ### Restructure: modular agent + skill architecture

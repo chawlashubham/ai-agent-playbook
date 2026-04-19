@@ -1,0 +1,62 @@
+# Test cases for: scope-splitter-v1
+# Prompt: prompts/experimental/planning/scope-splitter-v1.md
+
+prompt_id: scope-splitter-v1
+prompt_path: prompts/experimental/planning/scope-splitter-v1.md
+
+tests:
+  # ── Well-specified epic ────────────────────────────────────────────────────
+  - id: tc-split-001
+    description: "Well-specified backend epic: must produce 3–7 vertical slices with acceptance criteria and a start recommendation"
+    input:
+      epic_description: |
+        Add refund support to our payments API. Merchants should be able to:
+        (a) see past refunds for a charge, (b) issue a full refund on a
+        charge via a new endpoint, (c) optionally receive a webhook when
+        a refund completes. We integrate with Stripe as the gateway.
+      constraints: "Target GA in 4 weeks. One backend engineer full-time plus partial SRE support."
+      existing_context: "Payments service is Go, Postgres, event bus via Kafka."
+    assertions:
+      - type: contains
+        value: "Slices"
+      - type: contains_any
+        values: ["Acceptance", "acceptance"]
+      - type: contains
+        value: "Start Here"
+      - type: contains_any
+        values: ["[S]", "[M]", "[L]"]
+      - type: contains_any
+        values: ["webhook", "Webhook"]
+    expected_status: pass
+
+  # ── Too-vague epic ─────────────────────────────────────────────────────────
+  - id: tc-split-002
+    description: "One-line vague input: must ask for clarification rather than invent 7 tickets"
+    input:
+      epic_description: "Make the system faster."
+    assertions:
+      - type: contains_any
+        values: ["too vague", "unclear", "need more", "clarif", "which", "specific"]
+      - type: not_contains_any
+        values: ["Slice 7", "#### 6."]
+    expected_status: pass
+
+  # ── Horizontal-layering trap ───────────────────────────────────────────────
+  - id: tc-split-003
+    description: "Must slice vertically, not produce DB/API/frontend tickets as separate slices with no user outcome until last"
+    input:
+      epic_description: |
+        Add tenant-level API keys: admins create keys, keys are scoped to a
+        tenant, all requests must be authenticated by a key, with per-key
+        rate limits and audit logging.
+      constraints: "Small team. Prefers early flagged rollout."
+    assertions:
+      - type: not_contains_any
+        values:
+          - "Slice 1: DB schema\n"
+          - "Slice 1: Database only"
+      - type: contains_any
+        values: ["flag", "Feature flag", "feature flag"]
+      - type: contains
+        value: "Outcome"
+    expected_status: pass

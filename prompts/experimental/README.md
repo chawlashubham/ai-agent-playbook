@@ -24,3 +24,7 @@ experimental/
 | File | Description |
 |---|---|
 | [`summarization/chain-of-thought-summary-v1.md`](summarization/chain-of-thought-summary-v1.md) | CoT summarization experiment |
+| [`reporting/management-weekly-report-v1.md`](reporting/management-weekly-report-v1.md) | Manager-facing weekly status from GitHub PR/issue data |
+| [`planning/rfc-critique-v1.md`](planning/rfc-critique-v1.md) | Principal-engineer critique of a design doc / RFC |
+| [`planning/scope-splitter-v1.md`](planning/scope-splitter-v1.md) | Split an epic into vertically-sliced, shippable tickets |
+| [`management/1on1-prep-v1.md`](management/1on1-prep-v1.md) | Private 1:1 prep for a direct report from GitHub activity + prior notes |

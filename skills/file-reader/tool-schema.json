@@ -1,0 +1,19 @@
+{
+  "name": "file_reader",
+  "description": "Reads and extracts text content from a local file path or remote URL. Supports PDF, plain text, Markdown, and HTML. Use after web_search to get full content from URLs.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "source": {
+        "type": "string",
+        "description": "Local file path (e.g. /data/report.pdf) or publicly accessible remote URL."
+      },
+      "max_chars": {
+        "type": "integer",
+        "description": "Maximum characters to return. Defaults to 10000.",
+        "minimum": 1
+      }
+    },
+    "required": ["source"]
+  }
+}

@@ -1,0 +1,91 @@
+# Test cases for: rfc-critique-v1
+# Prompt: prompts/experimental/planning/rfc-critique-v1.md
+
+prompt_id: rfc-critique-v1
+prompt_path: prompts/experimental/planning/rfc-critique-v1.md
+
+tests:
+  # ── Risky design ───────────────────────────────────────────────────────────
+  - id: tc-rfc-001
+    description: "At-most-once refund pipeline with no DLQ: must flag as major/blocking"
+    input:
+      rfc_markdown: |
+        # RFC: Async Refund Pipeline
+
+        ## Summary
+        Move refund processing off the synchronous API path. Producer writes
+        to a Kafka topic `refunds.requested`. A single consumer processes
+        refunds and calls the payment gateway.
+
+        ## Delivery semantics
+        At-most-once. If the consumer crashes mid-batch, we skip the batch
+        to avoid double-refunding.
+
+        ## Error handling
+        On gateway error, we log and continue. No DLQ in v1.
+
+        ## API
+        `POST /refunds` returns 202 immediately.
+      context: "Financial services; refunds are subject to audit and regulatory SLA."
+    assertions:
+      - type: contains_any
+        values: ["at-most-once", "at least once", "at-least-once"]
+      - type: contains_any
+        values: ["DLQ", "dead letter", "dead-letter"]
+      - type: contains_any
+        values: ["idempoten"]
+      - type: contains_any
+        values: ["DO NOT PROCEED", "MAJOR REVISIONS"]
+    expected_status: pass
+
+  # ── Solid design ───────────────────────────────────────────────────────────
+  - id: tc-rfc-002
+    description: "Well-specified RFC: must not fabricate blockers"
+    input:
+      rfc_markdown: |
+        # RFC: Tenant-scoped rate limiter
+
+        ## Summary
+        Add a per-tenant rate limiter in front of `/v1/search`. Backed by
+        Redis, token-bucket algorithm, 100 req/s default per tenant,
+        overrideable per tenant via config.
+
+        ## Failure mode
+        If Redis is unreachable, we fail open (serve the request) and emit
+        a metric `ratelimit_degraded_total`.
+
+        ## Rollout
+        Behind feature flag `rate_limit_v1`. Canary 1% → 10% → 100% over
+        one week. Rollback = flip the flag off; no data migration.
+
+        ## Observability
+        Metrics: `ratelimit_allowed_total`, `ratelimit_denied_total`, both
+        by tenant. Alert on denied-rate > 5% sustained 10m.
+
+        ## Alternatives considered
+        In-process limiter (rejected: doesn't work across replicas).
+        Envoy-level limiter (rejected: we don't run Envoy).
+      context: "Internal search service, well-instrumented."
+    assertions:
+      - type: contains_any
+        values: ["LGTM", "PROCEED", "🟢", "🟡"]
+      - type: not_contains_any
+        values: ["DO NOT PROCEED", "🔴"]
+    expected_status: pass
+
+  # ── Too-thin RFC ───────────────────────────────────────────────────────────
+  - id: tc-rfc-003
+    description: "One-paragraph RFC: must flag insufficient detail, not fabricate critique"
+    input:
+      rfc_markdown: |
+        # RFC: Use gRPC
+
+        We should switch our service-to-service calls from REST to gRPC.
+        It's faster and has better tooling.
+      context: ""
+    assertions:
+      - type: contains_any
+        values: ["insufficient", "too thin", "not enough detail", "more information", "under-specified"]
+      - type: contains_any
+        values: ["Open Questions", "unanswered", "missing"]
+    expected_status: pass
